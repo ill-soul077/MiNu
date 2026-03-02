@@ -1,0 +1,4 @@
+CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS                    PORTS                                         NAMES
+0e33842504c0   postgres:16      "docker-entrypoint.s…"   6 minutes ago   Up 6 minutes              0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   minu-postgres
+523554bcea57   studentapp-app   "java -jar app.jar"      8 days ago      Exited (143) 7 days ago                                                 studentapp-app-1
+d5645153bf32   postgres:15      "docker-entrypoint.s…"   8 days ago      Exited (0) 7 days ago                                                   studentapp-db-1

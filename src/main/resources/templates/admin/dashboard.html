@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MiNu Marketplace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container">
+    <h2 class="mb-4">🔧 Admin Dashboard</h2>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-primary">
+                <div class="card-body">
+                    <h1 class="display-4 text-primary" th:text="${userCount}">0</h1>
+                    <h5 class="card-title">Total Users</h5>
+                    <a th:href="@{/admin/users}" class="btn btn-outline-primary btn-sm mt-2">Manage Users</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-warning">
+                <div class="card-body">
+                    <h1 class="display-4 text-warning" th:text="${unverifiedCount}">0</h1>
+                    <h5 class="card-title">Pending Verification</h5>
+                    <a th:href="@{/admin/users}" class="btn btn-outline-warning btn-sm mt-2">Review Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-success">
+                <div class="card-body">
+                    <h1 class="display-4 text-success" th:text="${storeCount}">0</h1>
+                    <h5 class="card-title">Total Stores</h5>
+                    <a th:href="@{/admin/stores}" class="btn btn-outline-success btn-sm mt-2">View Stores</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm border-info">
+                <div class="card-body">
+                    <h1 class="display-4 text-info" th:text="${orderCount}">0</h1>
+                    <h5 class="card-title">Total Orders</h5>
+                    <a th:href="@{/admin/orders}" class="btn btn-outline-info btn-sm mt-2">Manage Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">Quick Actions</div>
+                <div class="list-group list-group-flush">
+                    <a th:href="@{/admin/users}" class="list-group-item list-group-item-action">👤 Manage Users — Verify / Reject / Delete</a>
+                    <a th:href="@{/admin/stores}" class="list-group-item list-group-item-action">🏪 View All Stores</a>
+                    <a th:href="@{/admin/products}" class="list-group-item list-group-item-action">📦 View & Delete Products</a>
+                    <a th:href="@{/admin/orders}" class="list-group-item list-group-item-action">🧾 Manage Orders — Update Status</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">System Info</div>
+                <div class="card-body">
+                    <p><strong>Admin Credentials (default):</strong></p>
+                    <ul>
+                        <li>Username: <code>admin</code></li>
+                        <li>Password: <code>admin123</code></li>
+                    </ul>
+                    <p class="text-muted mb-0">
+                        When a new Seller or Customer registers, their account starts as
+                        <span class="badge bg-warning text-dark">✗ Unverified</span>.
+                        Go to <a th:href="@{/admin/users}">User Management</a> and click
+                        <span class="badge bg-success">Verify</span> to activate them.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

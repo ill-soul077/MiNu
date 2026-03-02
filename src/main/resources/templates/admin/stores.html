@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Stores - MiNu Marketplace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container">
+    <h2 class="mb-4">All Stores</h2>
+
+    <div th:if="${#lists.isEmpty(stores)}" class="alert alert-info">
+        No stores found.
+    </div>
+
+    <div class="table-responsive" th:unless="${#lists.isEmpty(stores)}">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Store Name</th>
+                <th>Description</th>
+                <th>Seller</th>
+                <th>Created</th>
+                <th>Products</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="store : ${stores}">
+                <td th:text="${store.id}"></td>
+                <td th:text="${store.name}"></td>
+                <td th:text="${#strings.abbreviate(store.description, 80)}"></td>
+                <td th:text="${store.seller.username}"></td>
+                <td th:text="${#temporals.format(store.createdAt, 'yyyy-MM-dd')}"></td>
+                <td th:text="${store.products.size()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

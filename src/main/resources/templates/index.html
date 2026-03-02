@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiNu Marketplace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container">
+    <div class="text-center py-5">
+        <h1 class="display-4">Welcome to MiNu Marketplace</h1>
+        <p class="lead text-muted">Your one-stop shop for everything you need</p>
+        <hr class="my-4">
+        <p>Browse products, manage your store, or place orders.</p>
+        <a class="btn btn-primary btn-lg" th:href="@{/products}">Browse Products</a>
+        <a class="btn btn-outline-secondary btn-lg ms-2" th:href="@{/register}" sec:authorize="!isAuthenticated()">Get Started</a>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-center p-4">
+                <h3>🛍️ Shop</h3>
+                <p>Browse and purchase products from various sellers.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center p-4">
+                <h3>💼 Sell</h3>
+                <p>List your products and manage your store.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center p-4">
+                <h3>📦 Track</h3>
+                <p>Track your orders from placement to delivery.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

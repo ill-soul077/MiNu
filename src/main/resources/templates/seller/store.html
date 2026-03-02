@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Store - MiNu Marketplace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container">
+    <h2 class="mb-4">My Store</h2>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <!-- If seller has a store, show store details -->
+    <div th:if="${hasStore}" class="card shadow">
+        <div class="card-body p-4">
+            <h3 th:text="${store.name}">Store Name</h3>
+            <p class="text-muted" th:text="${store.description}">Store description</p>
+            <p><small class="text-muted">Created: <span th:text="${#temporals.format(store.createdAt, 'yyyy-MM-dd')}"></span></small></p>
+            <hr>
+            <h5>Update Store Info</h5>
+            <form th:action="@{/seller/store/update}" method="post">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Store Name</label>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${store.name}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" th:text="${store.description}"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Store</button>
+                <a th:href="@{/seller/products}" class="btn btn-outline-secondary ms-2">Manage Products</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- If seller does NOT have a store, show create form -->
+    <div th:unless="${hasStore}" class="card shadow">
+        <div class="card-body p-5">
+            <h3 class="text-center mb-4">Create Your Store</h3>
+            <p class="text-center text-muted">You need to create a store before you can add products.</p>
+            <form th:action="@{/seller/store}" th:object="${storeDto}" method="post">
+                <div class="mb-3">
+                    <label for="storeName" class="form-label">Store Name</label>
+                    <input type="text" class="form-control" id="storeName" th:field="*{name}" required>
+                    <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="storeDesc" class="form-label">Description</label>
+                    <textarea class="form-control" id="storeDesc" th:field="*{description}" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Create Store</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
