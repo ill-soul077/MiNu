@@ -88,4 +88,8 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean isVerified() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

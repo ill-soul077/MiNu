@@ -22,9 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService;
-    private final CartService cartService;
-    private final ProductService productService;
+    private final OrderService orderService = null;
+    private final CartService cartService = null;
+    private final ProductService productService = null;
 
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam Long productId,

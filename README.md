@@ -55,6 +55,40 @@ A full-stack **Mini Marketplace** web application built for a Software Engineeri
 - **Docker Desktop** running
 - **Maven** (or use the included `mvnw` wrapper)
 
+### Option 1: Full Docker Deployment (Recommended)
+
+This runs both PostgreSQL and the Spring Boot application in Docker containers.
+
+```bash
+# Navigate to project directory
+cd "E:\3_2\project\SWE project\MiNu"
+
+# Build and start all services
+docker-compose up --build
+```
+
+The application will be available at: **http://localhost:8080**
+
+*See [DOCKER_SETUP.md](DOCKER_SETUP.md) for detailed Docker instructions.*
+
+**Key Endpoints:**
+- Application: http://localhost:8080
+- PostgreSQL: localhost:5433
+
+### Option 2: Local Development (PostgreSQL in Docker)
+
+Start only PostgreSQL in Docker, develop locally:
+
+```bash
+# Start PostgreSQL container
+docker-compose -f compose.dev.yaml up -d
+
+# Run Spring Boot locally
+.\mvnw.cmd spring-boot:run
+```
+
+### Option 3: Manual Setup (Legacy)
+
 ### Step 1: Start PostgreSQL via Docker
 
 ```bash
