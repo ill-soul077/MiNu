@@ -1,96 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin Dashboard')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <h2 class="mb-4">🔧 Admin Dashboard</h2>
+<div class="admin-layout">
+    <div th:replace="~{admin/layout :: sidebar}"></div>
 
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <main class="admin-content">
+        <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Overview of your marketplace</p>
+        </div>
 
-    <div class="row g-4">
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm border-primary">
-                <div class="card-body">
-                    <h1 class="display-4 text-primary" th:text="${userCount}">0</h1>
-                    <h5 class="card-title">Total Users</h5>
-                    <a th:href="@{/admin/users}" class="btn btn-outline-primary btn-sm mt-2">Manage Users</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm border-warning">
-                <div class="card-body">
-                    <h1 class="display-4 text-warning" th:text="${unverifiedCount}">0</h1>
-                    <h5 class="card-title">Pending Verification</h5>
-                    <a th:href="@{/admin/users}" class="btn btn-outline-warning btn-sm mt-2">Review Now</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm border-success">
-                <div class="card-body">
-                    <h1 class="display-4 text-success" th:text="${storeCount}">0</h1>
-                    <h5 class="card-title">Total Stores</h5>
-                    <a th:href="@{/admin/stores}" class="btn btn-outline-success btn-sm mt-2">View Stores</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center shadow-sm border-info">
-                <div class="card-body">
-                    <h1 class="display-4 text-info" th:text="${orderCount}">0</h1>
-                    <h5 class="card-title">Total Orders</h5>
-                    <a th:href="@{/admin/orders}" class="btn btn-outline-info btn-sm mt-2">Manage Orders</a>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div th:replace="~{fragments/layout :: alerts}"></div>
 
-    <hr class="my-4">
+        <!-- Stats Grid -->
+        <div class="grid grid-4" style="margin-bottom:2.5rem;">
+            <div class="stat-card accent fade-in fade-in-1">
+                <span class="stat-icon">👥</span>
+                <div class="stat-value" th:text="${userCount}">0</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card warning fade-in fade-in-2">
+                <span class="stat-icon">⏳</span>
+                <div class="stat-value" th:text="${unverifiedCount}">0</div>
+                <div class="stat-label">Pending Verification</div>
+            </div>
+            <div class="stat-card info fade-in fade-in-3">
+                <span class="stat-icon">🏪</span>
+                <div class="stat-value" th:text="${storeCount}">0</div>
+                <div class="stat-label">Active Stores</div>
+            </div>
+            <div class="stat-card success fade-in fade-in-4">
+                <span class="stat-icon">🧾</span>
+                <div class="stat-value" th:text="${orderCount}">0</div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+        </div>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white">Quick Actions</div>
-                <div class="list-group list-group-flush">
-                    <a th:href="@{/admin/users}" class="list-group-item list-group-item-action">👤 Manage Users — Verify / Reject / Delete</a>
-                    <a th:href="@{/admin/stores}" class="list-group-item list-group-item-action">🏪 View All Stores</a>
-                    <a th:href="@{/admin/products}" class="list-group-item list-group-item-action">📦 View & Delete Products</a>
-                    <a th:href="@{/admin/orders}" class="list-group-item list-group-item-action">🧾 Manage Orders — Update Status</a>
-                </div>
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Quick Actions</h3>
+            </div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                <a th:href="@{/admin/users}" class="btn btn-secondary">
+                    👥 Manage Users
+                </a>
+                <a th:href="@{/admin/orders}" class="btn btn-secondary">
+                    🧾 View Orders
+                </a>
+                <a th:href="@{/admin/products}" class="btn btn-secondary">
+                    📦 All Products
+                </a>
+                <a th:href="@{/admin/stores}" class="btn btn-secondary">
+                    🏪 All Stores
+                </a>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header bg-dark text-white">System Info</div>
-                <div class="card-body">
-                    <p><strong>Admin Credentials (default):</strong></p>
-                    <ul>
-                        <li>Username: <code>admin</code></li>
-                        <li>Password: <code>admin123</code></li>
-                    </ul>
-                    <p class="text-muted mb-0">
-                        When a new Seller or Customer registers, their account starts as
-                        <span class="badge bg-warning text-dark">✗ Unverified</span>.
-                        Go to <a th:href="@{/admin/users}">User Management</a> and click
-                        <span class="badge bg-success">Verify</span> to activate them.
-                    </p>
-                </div>
-            </div>
+
+        <!-- Pending verification notice -->
+        <div th:if="${unverifiedCount > 0}" class="alert alert-warning" style="margin-top:1.5rem;">
+            ⚠ You have <strong th:text="${unverifiedCount}">0</strong> user(s) pending verification.
+            <a th:href="@{/admin/users}" style="color:var(--warning);font-weight:700;margin-left:0.5rem;">Review now
+                →</a>
         </div>
-    </div>
+    </main>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

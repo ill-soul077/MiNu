@@ -22,9 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService = null;
-    private final CartService cartService = null;
-    private final ProductService productService = null;
+    private final OrderService orderService;
+    private final CartService cartService;
+    private final ProductService productService;
 
     @PostMapping("/cart/add")
     public String addToCart(@RequestParam Long productId,
@@ -81,5 +81,6 @@ public class OrderController {
         return "orders/list";
     }
 
-    public record CartItemView(Product product, Integer quantity, BigDecimal subtotal) {}
+    public record CartItemView(Product product, Integer quantity, BigDecimal subtotal) {
+    }
 }

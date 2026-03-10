@@ -1,68 +1,109 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Form - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Product Form')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 th:text="${product.id != null ? 'Edit Product' : 'Add New Product'}" class="mb-4"></h2>
+<div class="admin-layout">
+    <aside class="sidebar">
+        <div class="sidebar-section-label">Seller Hub</div>
+        <a th:href="@{/seller/store}" class="sidebar-link">
+            <span class="sidebar-icon">🏪</span> My Store
+        </a>
+        <a th:href="@{/seller/products}" class="sidebar-link">
+            <span class="sidebar-icon">📦</span> Products
+        </a>
+        <div class="sidebar-section-label">Account</div>
+        <a href="/products" class="sidebar-link">
+            <span class="sidebar-icon">🛍</span> Browse Shop
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-link"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+                <span class="sidebar-icon">↩</span> Sign Out
+            </button>
+        </form>
+    </aside>
 
-                    <form th:action="${product.id != null ? '/seller/products/' + product.id + '/edit' : '/seller/products'}"
-                          th:object="${product}" method="post">
-
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Product Name</label>
-                            <input type="text" class="form-control" id="name" th:field="*{name}" required>
-                            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" th:field="*{description}" rows="4"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Price ($)</label>
-                                <input type="number" class="form-control" id="price" th:field="*{price}"
-                                       step="0.01" min="0.01" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="stockQuantity" class="form-label">Stock Quantity</label>
-                                <input type="number" class="form-control" id="stockQuantity"
-                                       th:field="*{stockQuantity}" min="0" required>
-                                <div class="text-danger" th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}"></div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="imageUrl" class="form-label">Image URL (optional)</label>
-                            <input type="text" class="form-control" id="imageUrl" th:field="*{imageUrl}">
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">Save Product</button>
-                            <a th:href="@{/seller/products}" class="btn btn-outline-secondary">Cancel</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <main class="admin-content">
+        <div class="page-header">
+            <h1 th:text="${product.id != null} ? 'Edit Product' : 'Add New Product'">Product</h1>
+            <p th:text="${product.id != null} ? 'Update your product details' : 'Create a new product listing'">Form</p>
         </div>
-    </div>
+
+        <div th:replace="~{fragments/layout :: alerts}"></div>
+
+        <div class="card" style="max-width:640px;">
+            <form th:action="${product.id != null} ? @{/seller/products/{id}/edit(id=${product.id})} : @{/seller/products}"
+                  th:object="${product}" method="post">
+
+                <div class="form-group">
+                    <label class="form-label" for="name">Product Name *</label>
+                    <input type="text" id="name" th:field="*{name}"
+                           class="form-control" placeholder="e.g. Handcrafted Leather Wallet" required/>
+                    <div th:if="${#fields.hasErrors('name')}" class="form-error">
+                        ✕ <span th:errors="*{name}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea id="description" th:field="*{description}"
+                              class="form-control" rows="4"
+                              placeholder="Describe your product in detail — materials, dimensions, special features..."></textarea>
+                </div>
+
+                <div class="grid grid-2" style="gap:1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="price">Price (USD) *</label>
+                        <input type="number" id="price" th:field="*{price}"
+                               class="form-control" placeholder="0.00"
+                               step="0.01" min="0.01" required/>
+                        <div th:if="${#fields.hasErrors('price')}" class="form-error">
+                            ✕ <span th:errors="*{price}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="stockQuantity">Stock Quantity *</label>
+                        <input type="number" id="stockQuantity" th:field="*{stockQuantity}"
+                               class="form-control" placeholder="0"
+                               min="0" required/>
+                        <div th:if="${#fields.hasErrors('stockQuantity')}" class="form-error">
+                            ✕ <span th:errors="*{stockQuantity}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="imageUrl">Image URL</label>
+                    <input type="url" id="imageUrl" th:field="*{imageUrl}"
+                           class="form-control" placeholder="https://example.com/image.jpg"/>
+                    <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.35rem;">
+                        Provide a direct URL to a product image (HTTPS recommended)
+                    </div>
+                </div>
+
+                <!-- Image preview -->
+                <div th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                     style="margin-bottom:1.25rem;">
+                    <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">Current Image:</div>
+                    <img th:src="${product.imageUrl}" alt="Product preview"
+                         style="width:120px;height:120px;object-fit:cover;border-radius:var(--radius-sm);border:1px solid var(--border);"/>
+                </div>
+
+                <div style="display:flex;gap:0.75rem;flex-wrap:wrap;padding-top:0.5rem;">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span th:text="${product.id != null} ? '✓ Save Changes' : '+ Create Product'">Submit</span>
+                    </button>
+                    <a th:href="@{/seller/products}" class="btn btn-secondary btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

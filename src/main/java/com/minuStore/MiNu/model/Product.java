@@ -8,10 +8,13 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = "store")
+@EqualsAndHashCode(of = "id")
 public class Product {
 
     @Id
@@ -33,7 +36,8 @@ public class Product {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // EAGER so product.store.name works in Thymeleaf outside a transaction
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 

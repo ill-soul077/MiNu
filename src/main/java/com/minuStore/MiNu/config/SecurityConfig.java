@@ -27,7 +27,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/register", "/login", "/products", "/products/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers(
+                                "/", "/register", "/login", "/error",
+                                "/products", "/products/**",
+                                "/css/**", "/js/**", "/images/**", "/webjars/**",
+                                "/h2-console/**"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/cart/**", "/orders/**").hasRole("CUSTOMER")
@@ -41,6 +46,13 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
+                )
+                // Allow H2 console frames in dev
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.sameOrigin())
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
                 );
 
         return http.build();

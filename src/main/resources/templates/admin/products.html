@@ -1,61 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Products - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Products — Admin')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <h2 class="mb-4">All Products</h2>
+<div class="admin-layout">
+    <div th:replace="~{admin/layout :: sidebar}"></div>
 
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <main class="admin-content">
+        <div class="page-header">
+            <h1>Products</h1>
+            <p>All products across the marketplace</p>
+        </div>
 
-    <div th:if="${#lists.isEmpty(products)}" class="alert alert-info">
-        No products found.
-    </div>
+        <div th:replace="~{fragments/layout :: alerts}"></div>
 
-    <div class="table-responsive" th:unless="${#lists.isEmpty(products)}">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Store</th>
-                <th>Seller</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.id}"></td>
-                <td th:text="${product.name}"></td>
-                <td>$<span th:text="${product.price}"></span></td>
-                <td th:text="${product.stockQuantity}"></td>
-                <td th:text="${product.store.name}"></td>
-                <td th:text="${product.store.seller.username}"></td>
-                <td th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd')}"></td>
-                <td>
-                    <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Store</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Added</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted);">No products listed
+                    </td>
+                </tr>
+                <tr th:each="product : ${products}">
+                    <td style="color:var(--text-muted);font-size:0.8rem;">#<span th:text="${product.id}">1</span></td>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:0.75rem;">
+                            <div style="width:36px;height:36px;border-radius:6px;overflow:hidden;background:var(--bg-hover);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;">
+                                <img th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                                     th:src="${product.imageUrl}" style="width:100%;height:100%;object-fit:cover;"
+                                     onerror="this.style.display='none';this.parentElement.textContent='🛍'"/>
+                                <span th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}">🛍</span>
+                            </div>
+                            <span style="color:var(--text-primary);font-weight:500;"
+                                  th:text="${product.name}">Product</span>
+                        </div>
+                    </td>
+                    <td th:text="${product.store.name}">Store</td>
+                    <td style="color:var(--accent);font-weight:600;"
+                        th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0
+                    </td>
+                    <td>
+              <span th:if="${product.stockQuantity > 0}"
+                    th:text="${product.stockQuantity}"
+                    style="color:var(--success);font-weight:600;">10</span>
+                        <span th:if="${product.stockQuantity == 0}"
+                              style="color:var(--danger);font-weight:600;">Out of stock</span>
+                    </td>
+                    <td style="font-size:0.82rem;"
+                        th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}">Date
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post"
+                              class="inline-form">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    data-confirm="Permanently delete this product?">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

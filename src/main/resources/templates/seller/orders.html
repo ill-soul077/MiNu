@@ -1,24 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Orders - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Orders — Seller')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <h2 class="mb-4">Orders for My Products</h2>
-    <div class="alert alert-info">
-        Order management is handled by the admin. You can view your store and product details from the
-        <a th:href="@{/seller/store}">Store</a> page.
-    </div>
+<div class="admin-layout">
+    <aside class="sidebar">
+        <div class="sidebar-section-label">Seller Hub</div>
+        <a th:href="@{/seller/store}" class="sidebar-link">
+            <span class="sidebar-icon">🏪</span> My Store
+        </a>
+        <a th:href="@{/seller/products}" class="sidebar-link">
+            <span class="sidebar-icon">📦</span> Products
+        </a>
+        <a th:href="@{/seller/orders}" class="sidebar-link active">
+            <span class="sidebar-icon">🧾</span> Orders
+        </a>
+        <div class="sidebar-section-label">Account</div>
+        <a href="/products" class="sidebar-link">
+            <span class="sidebar-icon">🛍</span> Browse Shop
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-link"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+                <span class="sidebar-icon">↩</span> Sign Out
+            </button>
+        </form>
+    </aside>
+
+    <main class="admin-content">
+        <div class="page-header">
+            <h1>Orders</h1>
+            <p>Orders containing your products</p>
+        </div>
+
+        <div class="empty-state">
+            <span class="empty-icon">🧾</span>
+            <h3>Order tracking coming soon</h3>
+            <p>This section will show all orders containing your products. Check back soon!</p>
+            <a th:href="@{/seller/products}" class="btn btn-primary">Manage Products</a>
+        </div>
+    </main>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

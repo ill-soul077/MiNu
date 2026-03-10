@@ -13,10 +13,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"store", "orders", "password"})
+@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
     @Id
@@ -90,6 +93,6 @@ public class User implements UserDetails {
     }
 
     public boolean isVerified() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.verified;
     }
 }

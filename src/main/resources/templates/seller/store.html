@@ -1,66 +1,145 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Store - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Store')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <h2 class="mb-4">My Store</h2>
+<div class="admin-layout">
+    <!-- Seller Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-section-label">Seller Hub</div>
+        <a th:href="@{/seller/store}" class="sidebar-link active">
+            <span class="sidebar-icon">🏪</span> My Store
+        </a>
+        <a th:href="@{/seller/products}" class="sidebar-link">
+            <span class="sidebar-icon">📦</span> Products
+        </a>
+        <div class="sidebar-section-label">Account</div>
+        <a href="/products" class="sidebar-link">
+            <span class="sidebar-icon">🛍</span> Browse Shop
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="sidebar-link"
+                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+                <span class="sidebar-icon">↩</span> Sign Out
+            </button>
+        </form>
+    </aside>
 
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <main class="admin-content">
+        <div th:replace="~{fragments/layout :: alerts}"></div>
 
-    <!-- If seller has a store, show store details -->
-    <div th:if="${hasStore}" class="card shadow">
-        <div class="card-body p-4">
-            <h3 th:text="${store.name}">Store Name</h3>
-            <p class="text-muted" th:text="${store.description}">Store description</p>
-            <p><small class="text-muted">Created: <span th:text="${#temporals.format(store.createdAt, 'yyyy-MM-dd')}"></span></small></p>
-            <hr>
-            <h5>Update Store Info</h5>
-            <form th:action="@{/seller/store/update}" method="post">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Store Name</label>
-                    <input type="text" class="form-control" id="name" name="name" th:value="${store.name}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" th:text="${store.description}"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Store</button>
-                <a th:href="@{/seller/products}" class="btn btn-outline-secondary ms-2">Manage Products</a>
-            </form>
+        <!-- Create store form (no store yet) -->
+        <div th:if="${!hasStore}">
+            <div class="page-header">
+                <h1>Create Your Store</h1>
+                <p>Set up your seller storefront to start listing products</p>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger">✕ <span th:text="${error}"></span></div>
+
+            <div class="card" style="max-width:520px;">
+                <form th:action="@{/seller/store}" th:object="${storeDto}" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="storeName">Store Name</label>
+                        <input type="text" id="storeName" th:field="*{name}"
+                               class="form-control" placeholder="e.g. Artisan Crafts Co." required/>
+                        <div th:if="${#fields.hasErrors('name')}" class="form-error">
+                            ✕ <span th:errors="*{name}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="storeDesc">Description</label>
+                        <textarea id="storeDesc" th:field="*{description}"
+                                  class="form-control" placeholder="Tell customers what you sell..."
+                                  rows="4"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">
+                        🏪 Create Store
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- If seller does NOT have a store, show create form -->
-    <div th:unless="${hasStore}" class="card shadow">
-        <div class="card-body p-5">
-            <h3 class="text-center mb-4">Create Your Store</h3>
-            <p class="text-center text-muted">You need to create a store before you can add products.</p>
-            <form th:action="@{/seller/store}" th:object="${storeDto}" method="post">
-                <div class="mb-3">
-                    <label for="storeName" class="form-label">Store Name</label>
-                    <input type="text" class="form-control" id="storeName" th:field="*{name}" required>
-                    <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        <!-- Store already exists -->
+        <div th:if="${hasStore}">
+            <div class="page-header flex-between">
+                <div>
+                    <h1 th:text="${store.name}">My Store</h1>
+                    <p>Manage your store details and settings</p>
                 </div>
-                <div class="mb-3">
-                    <label for="storeDesc" class="form-label">Description</label>
-                    <textarea class="form-control" id="storeDesc" th:field="*{description}" rows="4"></textarea>
+                <a th:href="@{/seller/products}" class="btn btn-primary">
+                    📦 Manage Products
+                </a>
+            </div>
+
+            <!-- Store info card -->
+            <div class="grid grid-2" style="gap:1.5rem;margin-bottom:2rem;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Store Details</h3>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">
+                                Store Name
+                            </div>
+                            <div style="color:var(--text-primary);font-weight:600;" th:text="${store.name}">Name</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">
+                                Description
+                            </div>
+                            <div style="color:var(--text-secondary);"
+                                 th:text="${store.description ?: 'No description yet'}">Description
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">
+                                Created
+                            </div>
+                            <div style="color:var(--text-secondary);"
+                                 th:text="${#temporals.format(store.createdAt, 'MMMM d, yyyy')}">Date
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:0.3rem;">
+                                Products
+                            </div>
+                            <div style="color:var(--accent);font-weight:700;"
+                                 th:text="${#lists.size(store.products)} + ' listed'">0 listed
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Create Store</button>
-            </form>
+
+                <!-- Edit Store Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Store</h3>
+                    </div>
+                    <form th:action="@{/seller/store/update}" method="post">
+                        <div class="form-group">
+                            <label class="form-label">Store Name</label>
+                            <input type="text" name="name" class="form-control"
+                                   th:value="${store.name}" placeholder="Store name" required/>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3"
+                                      placeholder="Store description" th:text="${store.description}"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

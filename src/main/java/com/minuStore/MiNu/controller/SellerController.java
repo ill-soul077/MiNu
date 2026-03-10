@@ -38,6 +38,11 @@ public class SellerController {
         Optional<Store> store = storeService.findBySellerId(seller.getId());
         if (store.isPresent()) {
             model.addAttribute("store", store.get());
+            model.addAttribute("storeDto", new StoreDto(
+                    store.get().getId(),
+                    store.get().getName(),
+                    store.get().getDescription()
+            ));
             model.addAttribute("hasStore", true);
         } else {
             model.addAttribute("storeDto", new StoreDto());
@@ -52,7 +57,7 @@ public class SellerController {
                               @AuthenticationPrincipal User seller,
                               RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "seller/store-form";
+            return "seller/store";
         }
         try {
             storeService.createStore(dto, seller);
@@ -64,13 +69,9 @@ public class SellerController {
     }
 
     @PostMapping("/store/update")
-    public String updateStore(@Valid @ModelAttribute("storeDto") StoreDto dto,
-                              BindingResult result,
+    public String updateStore(@ModelAttribute("storeDto") StoreDto dto,
                               @AuthenticationPrincipal User seller,
                               RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            return "seller/store";
-        }
         try {
             storeService.updateStore(dto, seller);
             redirectAttributes.addFlashAttribute("message", "Store updated successfully!");
@@ -177,11 +178,8 @@ public class SellerController {
         return "redirect:/seller/products";
     }
 
-    // ─── Seller Orders ──────────────────────────────────────────────
-
     @GetMapping("/orders")
     public String sellerOrders(@AuthenticationPrincipal User seller, Model model) {
-        // Seller can view orders that contain their products - for now show store info
         model.addAttribute("seller", seller);
         return "seller/orders";
     }

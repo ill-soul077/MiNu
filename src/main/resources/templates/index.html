@@ -1,49 +1,84 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <div class="text-center py-5">
-        <h1 class="display-4">Welcome to MiNu Marketplace</h1>
-        <p class="lead text-muted">Your one-stop shop for everything you need</p>
-        <hr class="my-4">
-        <p>Browse products, manage your store, or place orders.</p>
-        <a class="btn btn-primary btn-lg" th:href="@{/products}">Browse Products</a>
-        <a class="btn btn-outline-secondary btn-lg ms-2" th:href="@{/register}" sec:authorize="!isAuthenticated()">Get Started</a>
+<!-- ── Hero ── -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-tag fade-in">
+                ✦ Premium Marketplace
+            </div>
+            <h1 class="fade-in fade-in-1">
+                Discover <em>Curated</em><br/>Exceptional Products
+            </h1>
+            <p class="fade-in fade-in-2">
+                MiNu connects discerning buyers with premium sellers. Shop unique products
+                crafted with care, or open your own store and reach thousands of customers.
+            </p>
+            <div class="hero-cta fade-in fade-in-3">
+                <a href="/products" class="btn btn-primary btn-lg">Browse Collection</a>
+                <a href="/register" class="btn btn-secondary btn-lg" sec:authorize="!isAuthenticated()">Become a
+                    Seller</a>
+                <a href="/seller/store" class="btn btn-secondary btn-lg" sec:authorize="hasRole('SELLER')">My Store
+                    →</a>
+            </div>
+        </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <div class="card text-center p-4">
-                <h3>🛍️ Shop</h3>
-                <p>Browse and purchase products from various sellers.</p>
+    <!-- Decorative SVG -->
+    <div class="hero-visual">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <circle cx="100" cy="100" r="90" stroke="#c9a96e" stroke-width="0.5"/>
+            <circle cx="100" cy="100" r="70" stroke="#c9a96e" stroke-width="0.5"/>
+            <circle cx="100" cy="100" r="50" stroke="#c9a96e" stroke-width="0.5"/>
+            <circle cx="100" cy="100" r="30" stroke="#c9a96e" stroke-width="0.5"/>
+        </svg>
+    </div>
+</section>
+
+<!-- ── Features ── -->
+<section
+        style="padding: 5rem 0; background: var(--bg-secondary); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+    <div class="container">
+        <div class="grid grid-3">
+            <div class="card text-center" style="border:none;background:transparent;">
+                <div style="font-size:2rem;margin-bottom:1rem;">✦</div>
+                <h3 style="margin-bottom:0.5rem;">Curated Quality</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem;">Every seller is verified. Every product is
+                    reviewed for authenticity and quality standards.</p>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center p-4">
-                <h3>💼 Sell</h3>
-                <p>List your products and manage your store.</p>
+            <div class="card text-center" style="border:none;background:transparent;">
+                <div style="font-size:2rem;margin-bottom:1rem;">⚡</div>
+                <h3 style="margin-bottom:0.5rem;">Instant Checkout</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem;">Streamlined cart and checkout. Place your order
+                    in seconds, track it in real-time.</p>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center p-4">
-                <h3>📦 Track</h3>
-                <p>Track your orders from placement to delivery.</p>
+            <div class="card text-center" style="border:none;background:transparent;">
+                <div style="font-size:2rem;margin-bottom:1rem;">🏪</div>
+                <h3 style="margin-bottom:0.5rem;">Open Your Store</h3>
+                <p style="color:var(--text-secondary);font-size:0.9rem;">Register as a seller, create your store, and
+                    start selling to thousands of customers.</p>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- ── CTA Banner ── -->
+<section style="padding:5rem 0;">
+    <div class="container text-center">
+        <h2 style="margin-bottom:1rem;">Ready to Start Shopping?</h2>
+        <p style="color:var(--text-secondary);margin-bottom:2rem;font-size:1rem;">Explore our collection of premium
+            products from verified sellers worldwide.</p>
+        <a href="/products" class="btn btn-primary btn-lg">View All Products</a>
+    </div>
+</section>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>
