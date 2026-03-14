@@ -1,98 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Cart')}"></head>
+  <head th:replace="~{fragments/layout :: head('Cart')}"></head>
 
-<body>
-<div th:replace="~{fragments/layout :: navbar}"></div>
+  <body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="page-content">
-    <div class="container" style="max-width:900px;">
-
+    <div class="page-content">
+      <div class="container" style="max-width: 900px">
         <div class="page-header">
-            <h1>Shopping Cart</h1>
-            <p th:if="${itemCount > 0}"
-               th:text="${itemCount} + ' item' + (${itemCount} != 1 ? 's' : '') + ' in your cart'">Items</p>
+          <h1>Shopping Cart</h1>
+          <p
+            th:if="${itemCount > 0}"
+            th:text="${itemCount} + ' item' + (${itemCount} != 1 ? 's' : '') + ' in your cart'"
+          >
+            Items
+          </p>
         </div>
 
         <div th:replace="~{fragments/layout :: alerts}"></div>
 
         <!-- Empty cart -->
         <div th:if="${#lists.isEmpty(cartItems)}" class="empty-state">
-            <span class="empty-icon">🛒</span>
-            <h3>Your cart is empty</h3>
-            <p>Looks like you haven't added anything yet.</p>
-            <a href="/products" class="btn btn-primary">Start Shopping</a>
+          <span class="empty-icon">🛒</span>
+          <h3>Your cart is empty</h3>
+          <p>Looks like you haven't added anything yet.</p>
+          <a href="/products" class="btn btn-primary">Start Shopping</a>
         </div>
 
         <!-- Cart with items -->
-        <div th:if="${not #lists.isEmpty(cartItems)}" class="grid grid-2" style="gap:2rem;align-items:start;">
+        <div
+          th:if="${not #lists.isEmpty(cartItems)}"
+          class="grid grid-2"
+          style="gap: 2rem; align-items: start"
+        >
+          <!-- Items -->
+          <div style="grid-column: 1 / -1" class="card">
+            <div th:each="item, iter : ${cartItems}" class="cart-item">
+              <!-- Image -->
+              <div class="cart-item-img">
+                <img
+                  th:if="${item.product.imageUrl != null and !#strings.isEmpty(item.product.imageUrl)}"
+                  th:src="${item.product.imageUrl}"
+                  th:alt="${item.product.name}"
+                />
+                <span
+                  th:unless="${item.product.imageUrl != null and !#strings.isEmpty(item.product.imageUrl)}"
+                  >🛍</span
+                >
+              </div>
 
-            <!-- Items -->
-            <div style="grid-column: 1 / -1;" class="card" th:style="'grid-column: 1 / -1;'">
-                <div th:each="item, iter : ${cartItems}" class="cart-item">
-                    <!-- Image -->
-                    <div class="cart-item-img">
-                        <img th:if="${item.product.imageUrl != null and !#strings.isEmpty(item.product.imageUrl)}"
-                             th:src="${item.product.imageUrl}" th:alt="${item.product.name}"/>
-                        <span th:unless="${item.product.imageUrl != null and !#strings.isEmpty(item.product.imageUrl)}">🛍</span>
-                    </div>
-
-                    <!-- Info -->
-                    <div class="cart-item-info">
-                        <div class="cart-item-name" th:text="${item.product.name}">Name</div>
-                        <div class="cart-item-store" th:text="${item.product.store.name}">Store</div>
-                        <div style="font-size:0.82rem;color:var(--text-muted);margin-top:0.25rem;">
-                            Qty: <strong th:text="${item.quantity}">1</strong> ×
-                            <span th:text="'$' + ${#numbers.formatDecimal(item.product.price, 1, 2)}">$0</span>
-                        </div>
-                    </div>
-
-                    <!-- Subtotal + Remove -->
-                    <div style="text-align:right;">
-                        <div class="cart-item-price" th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}">
-                            $0.00
-                        </div>
-                        <form th:action="@{/cart/remove}" method="post" style="margin-top:0.5rem;">
-                            <input type="hidden" name="productId" th:value="${item.product.id}"/>
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                        </form>
-                    </div>
+              <!-- Info -->
+              <div class="cart-item-info">
+                <div class="cart-item-name" th:text="${item.product.name}">
+                  Name
                 </div>
-            </div>
+                <div
+                  class="cart-item-store"
+                  th:text="${item.product.store.name}"
+                >
+                  Store
+                </div>
+                <div
+                  style="
+                    font-size: 0.82rem;
+                    color: var(--text-muted);
+                    margin-top: 0.25rem;
+                  "
+                >
+                  Qty: <strong th:text="${item.quantity}">1</strong> ×
+                  <span
+                    th:text="'$' + ${#numbers.formatDecimal(item.product.price, 1, 2)}"
+                    >$0</span
+                  >
+                </div>
+              </div>
 
+              <!-- Subtotal + Remove -->
+              <div style="text-align: right">
+                <div
+                  class="cart-item-price"
+                  th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}"
+                >
+                  $0.00
+                </div>
+                <form
+                  th:action="@{/cart/remove}"
+                  method="post"
+                  style="margin-top: 0.5rem"
+                >
+                  <input
+                    type="hidden"
+                    name="productId"
+                    th:value="${item.product.id}"
+                  />
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    Remove
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Order Summary (shown below on smaller grids) -->
-        <div th:if="${not #lists.isEmpty(cartItems)}" style="margin-top:1.5rem;max-width:420px;margin-left:auto;">
-            <div class="order-summary">
-                <h3 style="margin-bottom:1.25rem;">Order Summary</h3>
+        <div
+          th:if="${not #lists.isEmpty(cartItems)}"
+          style="margin-top: 1.5rem; max-width: 420px; margin-left: auto"
+        >
+          <div class="order-summary">
+            <h3 style="margin-bottom: 1.25rem">Order Summary</h3>
 
-                <div th:each="item : ${cartItems}" class="order-summary-row">
-                    <span th:text="${item.product.name} + ' × ' + ${item.quantity}">Item</span>
-                    <span th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}">$0</span>
-                </div>
-
-                <div class="order-summary-total">
-                    <span>Total</span>
-                    <span class="order-total-amount" th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">$0.00</span>
-                </div>
-
-                <form th:action="@{/orders/checkout}" method="post" style="margin-top:1.25rem;">
-                    <button type="submit" class="btn btn-primary btn-full btn-lg">
-                        Place Order →
-                    </button>
-                </form>
-
-                <a href="/products" class="btn btn-secondary btn-full" style="margin-top:0.75rem;">
-                    Continue Shopping
-                </a>
+            <div th:each="item : ${cartItems}" class="order-summary-row">
+              <span th:text="${item.product.name} + ' × ' + ${item.quantity}"
+                >Item</span
+              >
+              <span
+                th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}"
+                >$0</span
+              >
             </div>
+
+            <div class="order-summary-total">
+              <span>Total</span>
+              <span
+                class="order-total-amount"
+                th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}"
+                >$0.00</span
+              >
+            </div>
+
+            <form
+              th:action="@{/orders/checkout}"
+              method="post"
+              style="margin-top: 1.25rem"
+            >
+              <button type="submit" class="btn btn-primary btn-full btn-lg">
+                Place Order →
+              </button>
+            </form>
+
+            <a
+              href="/products"
+              class="btn btn-secondary btn-full"
+              style="margin-top: 0.75rem"
+            >
+              Continue Shopping
+            </a>
+          </div>
         </div>
-
+      </div>
     </div>
-</div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script th:src="@{/js/main.js}"></script>
-</body>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>

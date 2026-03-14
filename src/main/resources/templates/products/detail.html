@@ -1,117 +1,237 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/layout :: head(${product.name})}"></head>
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head th:replace="~{fragments/layout :: head(${product.name})}"></head>
 
-<body>
-<div th:replace="~{fragments/layout :: navbar}"></div>
+  <body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="page-content">
-    <div class="container">
-
+    <div class="page-content">
+      <div class="container">
         <!-- Breadcrumb -->
         <nav class="breadcrumb">
-            <a href="/">Home</a>
-            <span class="sep">›</span>
-            <a href="/products">Shop</a>
-            <span class="sep">›</span>
-            <span th:text="${product.name}">Product</span>
+          <a href="/">Home</a>
+          <span class="sep">›</span>
+          <a href="/products">Shop</a>
+          <span class="sep">›</span>
+          <span th:text="${product.name}">Product</span>
         </nav>
 
         <div th:replace="~{fragments/layout :: alerts}"></div>
 
-        <div class="grid grid-2" style="gap:3rem;align-items:start;">
+        <div class="grid grid-2" style="gap: 3rem; align-items: start">
+          <!-- Product Image -->
+          <div>
+            <div
+              style="
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                overflow: hidden;
+                aspect-ratio: 1/1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <img
+                th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                th:src="${product.imageUrl}"
+                th:alt="${product.name}"
+                style="width: 100%; height: 100%; object-fit: cover"
+              />
+              <div
+                th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                style="
+                  font-size: 5rem;
+                  color: var(--text-muted);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 100%;
+                  height: 100%;
+                "
+              >
+                🛍
+              </div>
+            </div>
+          </div>
 
-            <!-- Product Image -->
-            <div>
-                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;">
-                    <img th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
-                         th:src="${product.imageUrl}" th:alt="${product.name}"
-                         style="width:100%;height:100%;object-fit:cover;"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-                    <div th:style="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)} ? 'display:none;font-size:5rem;color:var(--text-muted)' : 'display:flex;font-size:5rem;color:var(--text-muted)'">
-                        🛍
-                    </div>
-                </div>
+          <!-- Product Info -->
+          <div>
+            <div
+              class="product-store"
+              style="font-size: 0.8rem; margin-bottom: 0.5rem"
+              th:text="${product.store.name}"
+            >
+              Store
             </div>
 
-            <!-- Product Info -->
-            <div>
-                <div class="product-store" style="font-size:0.8rem;margin-bottom:0.5rem;"
-                     th:text="${product.store.name}">Store
-                </div>
+            <h1
+              style="font-size: 2rem; margin-bottom: 1rem"
+              th:text="${product.name}"
+            >
+              Product Name
+            </h1>
 
-                <h1 style="font-size:2rem;margin-bottom:1rem;" th:text="${product.name}">Product Name</h1>
-
-                <div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;color:var(--accent);margin-bottom:1.5rem;"
-                     th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0.00
-                </div>
-
-                <p th:if="${product.description}" th:text="${product.description}"
-                   style="color:var(--text-secondary);line-height:1.7;margin-bottom:1.5rem;"></p>
-
-                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;">
-                    <span style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Availability:</span>
-                    <span th:if="${product.stockQuantity > 0}"
-                          th:text="${product.stockQuantity} + ' units in stock'"
-                          style="color:var(--success);font-size:0.875rem;font-weight:600;"></span>
-                    <span th:if="${product.stockQuantity == 0}"
-                          style="color:var(--danger);font-size:0.875rem;font-weight:600;">Out of Stock</span>
-                </div>
-
-                <!-- Add to Cart -->
-                <div sec:authorize="hasRole('CUSTOMER')">
-                    <form th:if="${product.stockQuantity > 0}" th:action="@{/cart/add}" method="post">
-                        <input type="hidden" name="productId" th:value="${product.id}"/>
-                        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-                            <div class="qty-input">
-                                <button type="button" class="qty-btn qty-minus">−</button>
-                                <input type="number" name="quantity" class="qty-val"
-                                       value="1" min="1" th:max="${product.stockQuantity}"/>
-                                <button type="button" class="qty-btn qty-plus">+</button>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-lg" style="flex:1;">
-                                🛒 Add to Cart
-                            </button>
-                        </div>
-                    </form>
-                    <div th:if="${product.stockQuantity == 0}">
-                        <button class="btn btn-secondary btn-lg" disabled
-                                style="width:100%;opacity:0.5;cursor:not-allowed;">
-                            Out of Stock
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Not logged in -->
-                <div sec:authorize="!isAuthenticated()">
-                    <a href="/login" class="btn btn-primary btn-lg" style="width:100%;justify-content:center;">
-                        Sign in to Purchase
-                    </a>
-                </div>
-
-                <div class="divider"></div>
-
-                <!-- Meta info -->
-                <div style="display:flex;flex-direction:column;gap:0.5rem;">
-                    <div style="display:flex;gap:1rem;font-size:0.82rem;">
-                        <span style="color:var(--text-muted);min-width:80px;">Seller</span>
-                        <span style="color:var(--text-secondary);"
-                              th:text="${product.store.seller.username}">seller</span>
-                    </div>
-                    <div style="display:flex;gap:1rem;font-size:0.82rem;">
-                        <span style="color:var(--text-muted);min-width:80px;">Added</span>
-                        <span style="color:var(--text-secondary);"
-                              th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}">Date</span>
-                    </div>
-                </div>
+            <div
+              style="
+                font-family: &quot;Playfair Display&quot;, serif;
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: var(--accent);
+                margin-bottom: 1.5rem;
+              "
+              th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"
+            >
+              $0.00
             </div>
+
+            <p
+              th:if="${product.description}"
+              th:text="${product.description}"
+              style="
+                color: var(--text-secondary);
+                line-height: 1.7;
+                margin-bottom: 1.5rem;
+              "
+            ></p>
+
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+              "
+            >
+              <span
+                style="
+                  font-size: 0.8rem;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.08em;
+                  color: var(--text-muted);
+                "
+                >Availability:</span
+              >
+              <span
+                th:if="${product.stockQuantity > 0}"
+                th:text="${product.stockQuantity} + ' units in stock'"
+                style="
+                  color: var(--success);
+                  font-size: 0.875rem;
+                  font-weight: 600;
+                "
+              ></span>
+              <span
+                th:if="${product.stockQuantity == 0}"
+                style="
+                  color: var(--danger);
+                  font-size: 0.875rem;
+                  font-weight: 600;
+                "
+                >Out of Stock</span
+              >
+            </div>
+
+            <!-- Add to Cart -->
+            <div sec:authorize="hasRole('CUSTOMER')">
+              <form
+                th:if="${product.stockQuantity > 0}"
+                th:action="@{/cart/add}"
+                method="post"
+              >
+                <input
+                  type="hidden"
+                  name="productId"
+                  th:value="${product.id}"
+                />
+                <div
+                  style="
+                    display: flex;
+                    gap: 1rem;
+                    align-items: center;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <div class="qty-input">
+                    <button type="button" class="qty-btn qty-minus">−</button>
+                    <input
+                      type="number"
+                      name="quantity"
+                      class="qty-val"
+                      value="1"
+                      min="1"
+                      th:max="${product.stockQuantity}"
+                    />
+                    <button type="button" class="qty-btn qty-plus">+</button>
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg"
+                    style="flex: 1"
+                  >
+                    🛒 Add to Cart
+                  </button>
+                </div>
+              </form>
+              <div th:if="${product.stockQuantity == 0}">
+                <button
+                  class="btn btn-secondary btn-lg"
+                  disabled
+                  style="width: 100%; opacity: 0.5; cursor: not-allowed"
+                >
+                  Out of Stock
+                </button>
+              </div>
+            </div>
+
+            <!-- Not logged in -->
+            <div sec:authorize="!isAuthenticated()">
+              <a
+                href="/login"
+                class="btn btn-primary btn-lg"
+                style="width: 100%; justify-content: center"
+              >
+                Sign in to Purchase
+              </a>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Meta info -->
+            <div style="display: flex; flex-direction: column; gap: 0.5rem">
+              <div style="display: flex; gap: 1rem; font-size: 0.82rem">
+                <span style="color: var(--text-muted); min-width: 80px"
+                  >Seller</span
+                >
+                <span
+                  style="color: var(--text-secondary)"
+                  th:text="${product.store.seller.username}"
+                  >seller</span
+                >
+              </div>
+              <div style="display: flex; gap: 1rem; font-size: 0.82rem">
+                <span style="color: var(--text-muted); min-width: 80px"
+                  >Added</span
+                >
+                <span
+                  style="color: var(--text-secondary)"
+                  th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}"
+                  >Date</span
+                >
+              </div>
+            </div>
+          </div>
         </div>
-
+      </div>
     </div>
-</div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script th:src="@{/js/main.js}"></script>
-</body>
+    <div th:replace="~{fragments/layout :: footer}"></div>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>

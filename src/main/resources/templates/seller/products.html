@@ -6,119 +6,104 @@
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
 <div class="admin-layout">
-    <aside class="sidebar">
-        <div class="sidebar-section-label">Seller Hub</div>
-        <a th:href="@{/seller/store}" class="sidebar-link">
-            <span class="sidebar-icon">🏪</span> My Store
-        </a>
-        <a th:href="@{/seller/products}" class="sidebar-link active">
-            <span class="sidebar-icon">📦</span> Products
-        </a>
-        <div class="sidebar-section-label">Account</div>
-        <a href="/products" class="sidebar-link">
-            <span class="sidebar-icon">🛍</span> Browse Shop
-        </a>
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="sidebar-link"
-                    style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
-                <span class="sidebar-icon">↩</span> Sign Out
-            </button>
-        </form>
-    </aside>
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Seller Hub</div>
+    <a th:href="@{/seller/store}" class="sidebar-link">
+      <span class="sidebar-icon">🏪</span> My Store
+    </a>
+    <a th:href="@{/seller/products}" class="sidebar-link active">
+      <span class="sidebar-icon">📦</span> Products
+    </a>
+    <div class="sidebar-section-label">Account</div>
+    <a href="/products" class="sidebar-link">
+      <span class="sidebar-icon">🛍</span> Browse Shop
+    </a>
+    <form th:action="@{/logout}" method="post">
+      <button type="submit" class="sidebar-link" style="background:none;border:none;width:100%;text-align:left;cursor:pointer;">
+        <span class="sidebar-icon">↩</span> Sign Out
+      </button>
+    </form>
+  </aside>
 
-    <main class="admin-content">
-        <div class="page-header flex-between">
-            <div>
-                <h1>My Products</h1>
-                <p>Manage your product listings</p>
-            </div>
-            <a th:href="@{/seller/products/new}" class="btn btn-primary"
-               th:if="${hasStore}">+ Add Product</a>
-        </div>
+  <main class="admin-content">
+    <div class="page-header flex-between">
+      <div>
+        <h1>My Products</h1>
+        <p>Manage your product listings</p>
+      </div>
+      <a th:href="@{/seller/products/new}" class="btn btn-primary"
+         th:if="${hasStore}">+ Add Product</a>
+    </div>
 
-        <div th:replace="~{fragments/layout :: alerts}"></div>
+    <div th:replace="~{fragments/layout :: alerts}"></div>
 
-        <!-- No store yet -->
-        <div th:if="${!hasStore}" class="empty-state">
-            <span class="empty-icon">🏪</span>
-            <h3>No store yet</h3>
-            <p>You need to create a store before adding products.</p>
-            <a th:href="@{/seller/store}" class="btn btn-primary">Create Store</a>
-        </div>
+    <!-- No store yet -->
+    <div th:if="${!hasStore}" class="empty-state">
+      <span class="empty-icon">🏪</span>
+      <h3>No store yet</h3>
+      <p>You need to create a store before adding products.</p>
+      <a th:href="@{/seller/store}" class="btn btn-primary">Create Store</a>
+    </div>
 
-        <!-- Products table -->
-        <div th:if="${hasStore}">
-            <div th:if="${#lists.isEmpty(products)}" class="empty-state">
-                <span class="empty-icon">📦</span>
-                <h3>No products yet</h3>
-                <p>Add your first product to start selling.</p>
-                <a th:href="@{/seller/products/new}" class="btn btn-primary">Add First Product</a>
-            </div>
+    <!-- Products table -->
+    <div th:if="${hasStore}">
+      <div th:if="${#lists.isEmpty(products)}" class="empty-state">
+        <span class="empty-icon">📦</span>
+        <h3>No products yet</h3>
+        <p>Add your first product to start selling.</p>
+        <a th:href="@{/seller/products/new}" class="btn btn-primary">Add First Product</a>
+      </div>
 
-            <div th:if="${not #lists.isEmpty(products)}" class="table-container">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Added</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="product : ${products}">
-                        <td>
-                            <div style="display:flex;align-items:center;gap:0.75rem;">
-                                <div style="width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">
-                                    <img th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
-                                         th:src="${product.imageUrl}"
-                                         style="width:100%;height:100%;object-fit:cover;"
-                                         onerror="this.style.display='none';this.parentElement.textContent='🛍'"/>
-                                    <span th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}">🛍</span>
-                                </div>
-                                <div>
-                                    <div style="color:var(--text-primary);font-weight:600;" th:text="${product.name}">
-                                        Name
-                                    </div>
-                                    <div style="font-size:0.78rem;color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                                         th:text="${product.description}">Desc
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td style="color:var(--accent);font-weight:700;"
-                            th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0
-                        </td>
-                        <td>
-                            <span th:if="${product.stockQuantity > 5}" style="color:var(--success);font-weight:600;"
-                                  th:text="${product.stockQuantity}">10</span>
-                            <span th:if="${product.stockQuantity > 0 and product.stockQuantity <= 5}"
-                                  style="color:var(--warning);font-weight:600;"
-                                  th:text="${product.stockQuantity} + ' (low)'">5</span>
-                            <span th:if="${product.stockQuantity == 0}" style="color:var(--danger);font-weight:600;">Out of stock</span>
-                        </td>
-                        <td style="font-size:0.82rem;" th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}">
-                            Date
-                        </td>
-                        <td>
-                            <div style="display:flex;gap:0.4rem;">
-                                <a th:href="@{/seller/products/{id}/edit(id=${product.id})}"
-                                   class="btn btn-secondary btn-sm">Edit</a>
-                                <form th:action="@{/seller/products/{id}/delete(id=${product.id})}" method="post"
-                                      class="inline-form">
-                                    <button type="submit" class="btn btn-danger btn-sm"
-                                            data-confirm="Delete this product permanently?">Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
+      <div th:if="${not #lists.isEmpty(products)}" class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="product : ${products}">
+              <td>
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                  <div style="width:40px;height:40px;border-radius:8px;overflow:hidden;background:var(--bg-hover);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">
+                    <img th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                         th:src="${product.imageUrl}"
+                         style="width:100%;height:100%;object-fit:cover;"/>
+                    <span th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}">🛍</span>
+                  </div>
+                  <div>
+                    <div style="color:var(--text-primary);font-weight:600;" th:text="${product.name}">Name</div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                         th:text="${product.description}">Desc</div>
+                  </div>
+                </div>
+              </td>
+              <td style="color:var(--accent);font-weight:700;" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0</td>
+              <td>
+                <span th:if="${product.stockQuantity > 5}" style="color:var(--success);font-weight:600;" th:text="${product.stockQuantity}">10</span>
+                <span th:if="${product.stockQuantity > 0 and product.stockQuantity <= 5}" style="color:var(--warning);font-weight:600;" th:text="${product.stockQuantity} + ' (low)'">5</span>
+                <span th:if="${product.stockQuantity == 0}" style="color:var(--danger);font-weight:600;">Out of stock</span>
+              </td>
+              <td style="font-size:0.82rem;" th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}">Date</td>
+              <td>
+                <div style="display:flex;gap:0.4rem;">
+                  <a th:href="@{/seller/products/{id}/edit(id=${product.id})}" class="btn btn-secondary btn-sm">Edit</a>
+                  <form th:action="@{/seller/products/{id}/delete(id=${product.id})}" method="post" class="inline-form">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            data-confirm="Delete this product permanently?">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
 </div>
 
 <script th:src="@{/js/main.js}"></script>

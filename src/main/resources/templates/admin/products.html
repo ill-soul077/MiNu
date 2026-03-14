@@ -1,82 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Products — Admin')}"></head>
+  <head th:replace="~{fragments/layout :: head('Products — Admin')}"></head>
 
-<body>
-<div th:replace="~{fragments/layout :: navbar}"></div>
+  <body>
+    <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="admin-layout">
-    <div th:replace="~{admin/layout :: sidebar}"></div>
+    <div class="admin-layout">
+      <div th:replace="~{admin/layout :: sidebar}"></div>
 
-    <main class="admin-content">
+      <main class="admin-content">
         <div class="page-header">
-            <h1>Products</h1>
-            <p>All products across the marketplace</p>
+          <h1>Products</h1>
+          <p>All products across the marketplace</p>
         </div>
 
         <div th:replace="~{fragments/layout :: alerts}"></div>
 
         <div class="table-container">
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Product</th>
-                    <th>Store</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Added</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:if="${#lists.isEmpty(products)}">
-                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted);">No products listed
-                    </td>
-                </tr>
-                <tr th:each="product : ${products}">
-                    <td style="color:var(--text-muted);font-size:0.8rem;">#<span th:text="${product.id}">1</span></td>
-                    <td>
-                        <div style="display:flex;align-items:center;gap:0.75rem;">
-                            <div style="width:36px;height:36px;border-radius:6px;overflow:hidden;background:var(--bg-hover);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;">
-                                <img th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
-                                     th:src="${product.imageUrl}" style="width:100%;height:100%;object-fit:cover;"
-                                     onerror="this.style.display='none';this.parentElement.textContent='🛍'"/>
-                                <span th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}">🛍</span>
-                            </div>
-                            <span style="color:var(--text-primary);font-weight:500;"
-                                  th:text="${product.name}">Product</span>
-                        </div>
-                    </td>
-                    <td th:text="${product.store.name}">Store</td>
-                    <td style="color:var(--accent);font-weight:600;"
-                        th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">$0
-                    </td>
-                    <td>
-              <span th:if="${product.stockQuantity > 0}"
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Product</th>
+                <th>Store</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Added</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(products)}">
+                <td
+                  colspan="7"
+                  style="
+                    text-align: center;
+                    padding: 3rem;
+                    color: var(--text-muted);
+                  "
+                >
+                  No products listed
+                </td>
+              </tr>
+              <tr th:each="product : ${products}">
+                <td style="color: var(--text-muted); font-size: 0.8rem">
+                  #<span th:text="${product.id}">1</span>
+                </td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.75rem">
+                    <div
+                      style="
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 6px;
+                        overflow: hidden;
+                        background: var(--bg-hover);
+                        flex-shrink: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1rem;
+                      "
+                    >
+                      <img
+                        th:if="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                        th:src="${product.imageUrl}"
+                        style="width: 100%; height: 100%; object-fit: cover"
+                      />
+                      <span
+                        th:unless="${product.imageUrl != null and !#strings.isEmpty(product.imageUrl)}"
+                        >🛍</span
+                      >
+                    </div>
+                    <span
+                      style="color: var(--text-primary); font-weight: 500"
+                      th:text="${product.name}"
+                      >Product</span
+                    >
+                  </div>
+                </td>
+                <td th:text="${product.store.name}">Store</td>
+                <td
+                  style="color: var(--accent); font-weight: 600"
+                  th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"
+                >
+                  $0
+                </td>
+                <td>
+                  <span
+                    th:if="${product.stockQuantity > 0}"
                     th:text="${product.stockQuantity}"
-                    style="color:var(--success);font-weight:600;">10</span>
-                        <span th:if="${product.stockQuantity == 0}"
-                              style="color:var(--danger);font-weight:600;">Out of stock</span>
-                    </td>
-                    <td style="font-size:0.82rem;"
-                        th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}">Date
-                    </td>
-                    <td>
-                        <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post"
-                              class="inline-form">
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                    data-confirm="Permanently delete this product?">Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    style="color: var(--success); font-weight: 600"
+                    >10</span
+                  >
+                  <span
+                    th:if="${product.stockQuantity == 0}"
+                    style="color: var(--danger); font-weight: 600"
+                    >Out of stock</span
+                  >
+                </td>
+                <td
+                  style="font-size: 0.82rem"
+                  th:text="${#temporals.format(product.createdAt, 'MMM d, yyyy')}"
+                >
+                  Date
+                </td>
+                <td>
+                  <form
+                    th:action="@{/admin/products/{id}/delete(id=${product.id})}"
+                    method="post"
+                    class="inline-form"
+                  >
+                    <button
+                      type="submit"
+                      class="btn btn-danger btn-sm"
+                      data-confirm="Permanently delete this product?"
+                    >
+                      Delete
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-    </main>
-</div>
+      </main>
+    </div>
 
-<script th:src="@{/js/main.js}"></script>
-</body>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>
