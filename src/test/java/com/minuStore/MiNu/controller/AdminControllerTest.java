@@ -1,9 +1,12 @@
 package com.minuStore.MiNu.controller;
 
 import com.minuStore.MiNu.TestFixtures;
+import com.minuStore.MiNu.config.SecurityConfig;
 import com.minuStore.MiNu.model.*;
 import com.minuStore.MiNu.service.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,6 +28,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminController.class)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 @DisplayName("AdminController Tests")
 class AdminControllerTest {
 
@@ -35,6 +40,8 @@ class AdminControllerTest {
     @MockBean private ProductService productService;
     @MockBean private StoreService storeService;
     @MockBean private CartService cartService;
+    @MockBean private com.minuStore.MiNu.service.CustomUserDetailsService userDetailsService;
+    @MockBean private com.minuStore.MiNu.config.CustomLoginSuccessHandler loginSuccessHandler;
 
     private User customer;
     private User seller;

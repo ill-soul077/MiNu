@@ -1,12 +1,15 @@
 package com.minuStore.MiNu.controller;
 
 import com.minuStore.MiNu.TestFixtures;
+import com.minuStore.MiNu.config.SecurityConfig;
 import com.minuStore.MiNu.dto.OrderItemDto;
 import com.minuStore.MiNu.model.*;
 import com.minuStore.MiNu.service.CartService;
 import com.minuStore.MiNu.service.OrderService;
 import com.minuStore.MiNu.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,6 +33,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 @DisplayName("OrderController Tests")
 class OrderControllerTest {
 
@@ -38,6 +43,8 @@ class OrderControllerTest {
     @MockBean private OrderService orderService;
     @MockBean private CartService cartService;
     @MockBean private ProductService productService;
+    @MockBean private com.minuStore.MiNu.service.CustomUserDetailsService userDetailsService;
+    @MockBean private com.minuStore.MiNu.config.CustomLoginSuccessHandler loginSuccessHandler;
 
     private User customer;
     private Store store;

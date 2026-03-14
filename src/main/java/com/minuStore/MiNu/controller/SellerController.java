@@ -27,10 +27,20 @@ public class SellerController {
     private final ProductService productService;
     private final StoreService storeService;
 
+    private String requireAuthentication(User seller) {
+        if (seller == null) {
+            return "redirect:/login";
+        }
+        return null;
+    }
+
     // ─── Store Management ───────────────────────────────────────────
 
     @GetMapping("/store")
     public String viewStore(@AuthenticationPrincipal User seller, Model model) {
+        if (seller == null) {
+            return "redirect:/login";
+        }
         if (!seller.isVerified()) {
             model.addAttribute("error", "Your account must be verified by an admin before you can create a store.");
             return "seller/store-form";
@@ -56,6 +66,10 @@ public class SellerController {
                               BindingResult result,
                               @AuthenticationPrincipal User seller,
                               RedirectAttributes redirectAttributes) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         if (result.hasErrors()) {
             return "seller/store";
         }
@@ -72,6 +86,10 @@ public class SellerController {
     public String updateStore(@ModelAttribute("storeDto") StoreDto dto,
                               @AuthenticationPrincipal User seller,
                               RedirectAttributes redirectAttributes) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         try {
             storeService.updateStore(dto, seller);
             redirectAttributes.addFlashAttribute("message", "Store updated successfully!");
@@ -85,6 +103,10 @@ public class SellerController {
 
     @GetMapping("/products")
     public String myProducts(@AuthenticationPrincipal User seller, Model model) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         List<Product> products = productService.findBySeller(seller.getId());
         model.addAttribute("products", products);
         model.addAttribute("hasStore", storeService.sellerHasStore(seller.getId()));
@@ -94,6 +116,10 @@ public class SellerController {
     @GetMapping("/products/new")
     public String newProductForm(@AuthenticationPrincipal User seller, Model model,
                                  RedirectAttributes redirectAttributes) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         if (!seller.isVerified()) {
             redirectAttributes.addFlashAttribute("error", "Your account must be verified first.");
             return "redirect:/seller/products";
@@ -111,6 +137,10 @@ public class SellerController {
                                 BindingResult result,
                                 @AuthenticationPrincipal User seller,
                                 RedirectAttributes redirectAttributes) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         if (result.hasErrors()) {
             return "seller/product-form";
         }
@@ -127,6 +157,10 @@ public class SellerController {
     public String editProductForm(@PathVariable Long id,
                                   @AuthenticationPrincipal User seller,
                                   Model model) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         Product product = productService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
@@ -153,6 +187,10 @@ public class SellerController {
                                 BindingResult result,
                                 @AuthenticationPrincipal User seller,
                                 RedirectAttributes redirectAttributes) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         if (result.hasErrors()) {
             return "seller/product-form";
         }
@@ -169,6 +207,10 @@ public class SellerController {
     public String deleteProduct(@PathVariable Long id,
                                 @AuthenticationPrincipal User seller,
                                 RedirectAttributes redirectAttributes) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         try {
             productService.deleteProduct(id, seller);
             redirectAttributes.addFlashAttribute("message", "Product deleted!");
@@ -180,6 +222,10 @@ public class SellerController {
 
     @GetMapping("/orders")
     public String sellerOrders(@AuthenticationPrincipal User seller, Model model) {
+        String auth = requireAuthentication(seller);
+        if (auth != null) {
+            return auth;
+        }
         model.addAttribute("seller", seller);
         return "seller/orders";
     }

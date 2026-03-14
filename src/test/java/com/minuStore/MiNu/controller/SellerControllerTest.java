@@ -11,9 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import com.minuStore.MiNu.config.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,6 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SellerController.class)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 @DisplayName("SellerController Tests")
 class SellerControllerTest {
 
@@ -39,6 +44,8 @@ class SellerControllerTest {
     @MockBean private ProductService productService;
     @MockBean private StoreService storeService;
     @MockBean private CartService cartService;
+    @MockBean private com.minuStore.MiNu.service.CustomUserDetailsService userDetailsService;
+    @MockBean private com.minuStore.MiNu.config.CustomLoginSuccessHandler loginSuccessHandler;
 
     private User verifiedSeller;
     private User unverifiedSeller;

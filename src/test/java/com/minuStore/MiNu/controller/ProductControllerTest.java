@@ -1,6 +1,7 @@
 package com.minuStore.MiNu.controller;
 
 import com.minuStore.MiNu.TestFixtures;
+import com.minuStore.MiNu.config.SecurityConfig;
 import com.minuStore.MiNu.model.Product;
 import com.minuStore.MiNu.model.Store;
 import com.minuStore.MiNu.model.User;
@@ -8,6 +9,8 @@ import com.minuStore.MiNu.service.CartService;
 import com.minuStore.MiNu.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 @WebMvcTest(ProductController.class)
+@Import(SecurityConfig.class)
+@AutoConfigureMockMvc
 @DisplayName("ProductController Tests")
 class ProductControllerTest {
 
@@ -34,6 +39,8 @@ class ProductControllerTest {
 
     @MockBean private ProductService productService;
     @MockBean private CartService cartService; // needed for GlobalControllerAdvice
+    @MockBean private com.minuStore.MiNu.service.CustomUserDetailsService userDetailsService;
+    @MockBean private com.minuStore.MiNu.config.CustomLoginSuccessHandler loginSuccessHandler;
 
     private User seller;
     private Store store;
