@@ -1,64 +1,94 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Create Account')}"></head>
+
 <body>
-<div th:replace="~{fragments/layout :: navbar}"></div>
+<div class="auth-wrapper">
+    <div class="auth-card fade-in" style="max-width:500px;">
+        <a href="/" class="auth-logo" style="display:block;text-decoration:none;">MiNu</a>
+        <p class="auth-subtitle">Create your account to get started</p>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-body p-5">
-                    <h2 class="text-center mb-4">Register</h2>
+        <div th:if="${error}" class="alert alert-danger">
+            ✕ <span th:text="${error}"></span>
+        </div>
 
-                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <form th:action="@{/register}" th:object="${user}" method="post">
 
-                    <form th:action="@{/register}" th:object="${user}" method="post">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" th:field="*{username}" required>
-                            <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+            <div class="form-group">
+                <label class="form-label">I want to</label>
+                <div class="role-select">
+                    <label class="role-option">
+                        <input type="radio" name="role" value="CUSTOMER" checked/>
+                        <div class="role-label">
+                            <span class="role-icon">🛍</span>
+                            Shop as Customer
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
-                            <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </label>
+                    <label class="role-option">
+                        <input type="radio" name="role" value="SELLER"/>
+                        <div class="role-label">
+                            <span class="role-icon">🏪</span>
+                            Sell as Merchant
                         </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Register as</label>
-                            <select class="form-select" id="role" th:field="*{role}">
-                                <option value="CUSTOMER">Customer</option>
-                                <option value="SELLER">Seller</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" th:field="*{password}" required>
-                            <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}" required>
-                            <div class="text-danger" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Register</button>
-                    </form>
-                    <p class="text-center mt-3">
-                        Already have an account? <a th:href="@{/login}">Login here</a>
-                    </p>
+                    </label>
                 </div>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input type="text" id="username" th:field="*{username}"
+                       class="form-control" placeholder="Choose a username" required/>
+                <div th:if="${#fields.hasErrors('username')}" class="form-error">
+                    ✕ <span th:errors="*{username}"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">Email Address</label>
+                <input type="email" id="email" th:field="*{email}"
+                       class="form-control" placeholder="your@email.com" required/>
+                <div th:if="${#fields.hasErrors('email')}" class="form-error">
+                    ✕ <span th:errors="*{email}"></span>
+                </div>
+            </div>
+
+            <div class="grid grid-2" style="gap:1rem;">
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" th:field="*{password}"
+                           class="form-control" placeholder="Min 6 characters" required/>
+                    <div th:if="${#fields.hasErrors('password')}" class="form-error">
+                        ✕ <span th:errors="*{password}"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" th:field="*{confirmPassword}"
+                           class="form-control" placeholder="Repeat password" required/>
+                    <div th:if="${#fields.hasErrors('confirmPassword')}" class="form-error">
+                        ✕ <span th:errors="*{confirmPassword}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.85rem 1rem;font-size:0.82rem;color:var(--text-secondary);margin-bottom:1.25rem;">
+                ℹ New seller accounts require admin verification before you can create a store.
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full btn-lg">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-divider">or</div>
+
+        <p style="text-align:center;font-size:0.875rem;color:var(--text-secondary);">
+            Already have an account?
+            <a href="/login" style="color:var(--accent);font-weight:600;"> Sign in</a>
+        </p>
     </div>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

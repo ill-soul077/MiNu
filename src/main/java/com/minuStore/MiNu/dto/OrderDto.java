@@ -17,7 +17,7 @@ public class OrderDto {
     private Long customerId;
 
     @Builder.Default
-    private List<OrderItemDto> items = new ArrayList<>();
+    private final List<OrderItemDto> items = new ArrayList<>();
 
     private String status;
 }

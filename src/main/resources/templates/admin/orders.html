@@ -1,66 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Orders - MiNu Marketplace</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Orders — Admin')}"></head>
+
 <body>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 
-<div class="container">
-    <h2 class="mb-4">Order Management</h2>
+<div class="admin-layout">
+    <div th:replace="~{admin/layout :: sidebar}"></div>
 
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <main class="admin-content">
+        <div class="page-header">
+            <h1>Orders</h1>
+            <p>Manage and update all platform orders</p>
+        </div>
 
-    <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">
-        No orders found.
-    </div>
+        <div th:replace="~{fragments/layout :: alerts}"></div>
 
-    <div class="table-responsive" th:unless="${#lists.isEmpty(orders)}">
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-            <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Update Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="order : ${orders}">
-                <td th:text="${order.id}"></td>
-                <td th:text="${order.customer.username}"></td>
-                <td>$<span th:text="${order.totalAmount}"></span></td>
-                <td>
-                    <span class="badge"
-                          th:classappend="${order.status.name() == 'DELIVERED' ? 'bg-success' :
-                                           (order.status.name() == 'CANCELLED' ? 'bg-danger' :
-                                           (order.status.name() == 'SHIPPED' ? 'bg-info' : 'bg-warning'))}"
-                          th:text="${order.status}"></span>
-                </td>
-                <td th:text="${#temporals.format(order.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                    <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post" class="d-flex gap-1">
-                        <select name="status" class="form-select form-select-sm" style="width: auto;">
-                            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
-                                    th:selected="${s == order.status}"></option>
-                        </select>
-                        <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Placed</th>
+                    <th>Update Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(orders)}">
+                    <td colspan="7" style="text-align:center;padding:3rem;color:var(--text-muted);">No orders yet</td>
+                </tr>
+                <tr th:each="order : ${orders}">
+                    <td style="color:var(--text-muted);font-size:0.8rem;font-weight:600;">#<span
+                            th:text="${order.id}">1</span></td>
+                    <td style="color:var(--text-primary);font-weight:500;" th:text="${order.customer.username}">
+                        customer
+                    </td>
+                    <td>
+                        <span class="badge badge-info" th:text="${#lists.size(order.orderItems)} + ' item(s)'">0</span>
+                    </td>
+                    <td style="color:var(--accent);font-weight:700;font-family:'Playfair Display',serif;"
+                        th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$0
+                    </td>
+                    <td>
+              <span th:class="'badge badge-' + ${#strings.toLowerCase(order.status)}"
+                    th:text="${order.status}">PENDING</span>
+                    </td>
+                    <td style="font-size:0.82rem;"
+                        th:text="${#temporals.format(order.createdAt, 'MMM d, yyyy')}">Date
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post"
+                              style="display:flex;gap:0.5rem;align-items:center;">
+                            <select name="status" class="form-control"
+                                    style="padding:0.35rem 0.6rem;font-size:0.8rem;width:auto;">
+                                <option th:each="s : ${statuses}"
+                                        th:value="${s}"
+                                        th:text="${s}"
+                                        th:selected="${s == order.status}">STATUS
+                                </option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
 </div>
 
-<div th:replace="~{fragments/layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

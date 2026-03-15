@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- ═══ ADMIN SIDEBAR FRAGMENT ═══ -->
+<aside th:fragment="sidebar" class="sidebar" style="width:250px;background:var(--bg-secondary);border-right:1px solid var(--border);padding:1.5rem 0;">
+    <div class="sidebar-section-label" style="padding:0 1.5rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:1rem;font-weight:700;">Dashboard</div>
+    
+    <a th:href="@{/admin/dashboard}" class="sidebar-link" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;">
+        <span style="font-size:1.2rem;">📊</span> Dashboard
+    </a>
+    
+    <div class="sidebar-section-label" style="padding:0 1.5rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-top:1rem;margin-bottom:1rem;font-weight:700;">Management</div>
+    
+    <a th:href="@{/admin/users}" class="sidebar-link" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;">
+        <span style="font-size:1.2rem;">👥</span> Users
+    </a>
+    
+    <a th:href="@{/admin/stores}" class="sidebar-link" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;">
+        <span style="font-size:1.2rem;">🏪</span> Stores
+    </a>
+    
+    <a th:href="@{/admin/products}" class="sidebar-link" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;">
+        <span style="font-size:1.2rem;">📦</span> Products
+    </a>
+    
+    <a th:href="@{/admin/orders}" class="sidebar-link" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;">
+        <span style="font-size:1.2rem;">🧾</span> Orders
+    </a>
+    
+    <div class="sidebar-section-label" style="padding:0 1.5rem;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-top:1rem;margin-bottom:1rem;font-weight:700;">Account</div>
+    
+    <a href="/" class="sidebar-link" style="display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1.5rem;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;">
+        <span style="font-size:1.2rem;">🛍</span> Back to Shop
+    </a>
+    
+    <form th:action="@{/logout}" method="post" style="padding:0 1.5rem;">
+        <button type="submit" class="sidebar-link" style="background:none;border:none;width:100%;text-align:left;display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;color:var(--text-secondary);text-decoration:none;cursor:pointer;transition:color 0.2s;">
+            <span style="font-size:1.2rem;">↩</span> Sign Out
+        </button>
+    </form>
+</aside>
+
+</html>

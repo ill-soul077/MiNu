@@ -13,10 +13,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"store", "orders", "password"})
+@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
     @Id
@@ -87,5 +90,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isVerified() {
+        return this.verified;
     }
 }

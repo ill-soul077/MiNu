@@ -81,5 +81,6 @@ public class OrderController {
         return "orders/list";
     }
 
-    public record CartItemView(Product product, Integer quantity, BigDecimal subtotal) {}
+    public record CartItemView(Product product, Integer quantity, BigDecimal subtotal) {
+    }
 }
