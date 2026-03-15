@@ -1,6 +1,6 @@
 spring:
   application:
-    name: MiNu
+    name: minu-app
 
   datasource:
     url: jdbc:postgresql://localhost:5433/minu_db
