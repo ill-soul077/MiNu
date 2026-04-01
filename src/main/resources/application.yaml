@@ -3,9 +3,9 @@ spring:
     name: minu-app
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/minu_db
-    username: minu_user
-    password: minu_secret
+    url: postgresql://minu_db_user:jbxF0mLAgGdUfbpk7yds3h6JMzDHE4mR@dpg-d76dfvpaae7s73c2k4bg-a.ohio-postgres.render.com/minu_db
+    username: minu_db_user
+    password: jbxF0mLAgGdUfbpk7yds3h6JMzDHE4mR
     driver-class-name: org.postgresql.Driver
 
   jpa:
