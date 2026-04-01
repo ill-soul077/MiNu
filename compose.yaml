@@ -1,34 +1,28 @@
 services:
   postgres:
-    image: 'postgres:16'
+    image: postgres:16
     container_name: minu-postgres
     environment:
-      - 'POSTGRES_DB=minu_db'
-      - 'POSTGRES_PASSWORD=minu_secret'
-      - 'POSTGRES_USER=minu_user'
+      POSTGRES_DB: minu_db
+      POSTGRES_USER: minu_user
+      POSTGRES_PASSWORD: minu_secret
     ports:
-      - '127.0.0.1:5433:5432'
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U minu_user -d minu_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   minu-app:
     build: .
     container_name: minu-app
     environment:
-      - 'SPRING_PROFILES_ACTIVE=docker'
-      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/minu_db'
-      - 'SPRING_DATASOURCE_USERNAME=minu_db_user'
-      - 'SPRING_DATASOURCE_PASSWORD=jbxF0mLAgGdUfbpk7yds3h6JMzDHE4mR'
-      - '8081:8080'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/minu_db
+      SPRING_DATASOURCE_USERNAME: minu_user
+      SPRING_DATASOURCE_PASSWORD: minu_secret
+    ports:
+      - "8081:8080"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     restart: unless-stopped
 
 volumes:
