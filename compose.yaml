@@ -23,9 +23,8 @@ services:
     environment:
       - 'SPRING_PROFILES_ACTIVE=docker'
       - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/minu_db'
-      - 'SPRING_DATASOURCE_USERNAME=minu_user'
-      - 'SPRING_DATASOURCE_PASSWORD=minu_secret'
-    ports:
+      - 'SPRING_DATASOURCE_USERNAME=minu_db_user'
+      - 'SPRING_DATASOURCE_PASSWORD=jbxF0mLAgGdUfbpk7yds3h6JMzDHE4mR'
       - '8081:8080'
     depends_on:
       postgres:
