@@ -24,17 +24,16 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # ── 3. Make mvnw executable ───────────────────────────────────────────
+      # ── 3. Make mvnw executable
       - name: Grant execute permission for mvnw
         run: chmod +x mvnw
 
-      # ── 4. Run all tests (unit + integration) ─────────────────────────────
-      #       The test application.yaml overrides the datasource to H2,
-      #       so no PostgreSQL/Docker is needed in CI.
+      # ── 4. Run all tests (unit + integration)
+
       - name: Run tests with Maven
         run: ./mvnw test --no-transfer-progress
 
-      # ── 5. Upload Surefire test reports as artifact ───────────────────────
+      # ── 5. Upload Surefire test reports as artifact
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
