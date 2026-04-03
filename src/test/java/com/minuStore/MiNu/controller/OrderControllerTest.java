@@ -50,7 +50,7 @@ class OrderControllerTest {
     private Store store;
     private Product product;
     private Order order;
-    /* setters */
+
     @BeforeEach
     void setUp() {
         customer = TestFixtures.verifiedCustomer();
@@ -60,9 +60,6 @@ class OrderControllerTest {
         when(cartService.getItemCount()).thenReturn(0);
     }
 
-    // ══════════════════════════════════════════════════════════
-    // Security checks
-    // ══════════════════════════════════════════════════════════
     @Test
     @DisplayName("GET /cart should require CUSTOMER role")
     void cart_deniesNonCustomer() throws Exception {
