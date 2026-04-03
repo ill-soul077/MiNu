@@ -50,7 +50,7 @@ class OrderControllerTest {
     private Store store;
     private Product product;
     private Order order;
-
+    /* setters */
     @BeforeEach
     void setUp() {
         customer = TestFixtures.verifiedCustomer();
