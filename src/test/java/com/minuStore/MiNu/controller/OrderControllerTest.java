@@ -60,9 +60,6 @@ class OrderControllerTest {
         when(cartService.getItemCount()).thenReturn(0);
     }
 
-    // ══════════════════════════════════════════════════════════
-    // Security checks
-    // ══════════════════════════════════════════════════════════
     @Test
     @DisplayName("GET /cart should require CUSTOMER role")
     void cart_deniesNonCustomer() throws Exception {
