@@ -26,6 +26,7 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final CustomLoginSuccessHandler loginSuccessHandler;
+    //private final PasswordEncoder passwordEncoder;
 
     // Known protected route patterns
     private static final String[] PROTECTED_ROUTES = {
@@ -96,6 +97,8 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
