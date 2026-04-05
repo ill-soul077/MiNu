@@ -70,7 +70,7 @@ The platform connects three distinct actors — **Customers**, **Sellers**, and 
 └──────────────────────────────────────────────────────────┘
 ```
 
-### Mermaid Architecture Diagram
+### Architecture Diagram
 
 ```mermaid
 flowchart TD
@@ -953,7 +953,7 @@ spring.h2.console.enabled=false
 
 <div align="center">
 
-**MiNu Store** — Built with ❤️ at KUET CSE  
+**MiNu Store**  
 Spring Boot · PostgreSQL · Docker · GitHub Actions
 
 </div>
