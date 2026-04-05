@@ -1,6 +1,7 @@
 package com.minuStore.MiNu.config;
 
 import com.minuStore.MiNu.service.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.util.AntPathMatcher;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +26,12 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final CustomLoginSuccessHandler loginSuccessHandler;
-    //private final PasswordEncoder passwordEncoder;
+
+    // Known protected route patterns
+    private static final String[] PROTECTED_ROUTES = {
+            "/admin/**", "/seller/**", "/cart/**", "/orders/**",
+            "/profile/**", "/dashboard/**"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/seller/**").hasRole("SELLER")
                         .requestMatchers("/cart/**", "/orders/**").hasRole("CUSTOMER")
-                        .anyRequest().authenticated()
+
+                        .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -48,7 +58,27 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                // Allow H2 console frames in dev
+                .exceptionHandling(ex -> ex
+                        // Authenticated user hits /admin but isn't ADMIN → 403 error page
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+                        })
+                        // Unauthenticated user hits /cart → redirect to login
+                        //    Unauthenticated user  → falls through to controller → 404
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String uri = request.getRequestURI();
+                            boolean isKnownProtectedRoute = Arrays.stream(PROTECTED_ROUTES)
+                                    .anyMatch(pattern -> new AntPathMatcher().match(pattern, uri));
+
+                            if (isKnownProtectedRoute) {
+                                // Known protected route → redirect to login
+                                response.sendRedirect(request.getContextPath() + "/login");
+                            } else {
+                                // Unknown route → let it fall through to 404
+                                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                            }
+                        })
+                )
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())
                 )
