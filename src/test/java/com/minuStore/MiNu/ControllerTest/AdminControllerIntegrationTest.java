@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +52,7 @@ public class AdminControllerIntegrationTest {
     void getDashboard_unauthenticated_shouldRedirectToLogin() throws Exception {
         mockMvc.perform(get("/admin/dashboard"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/login"));
+                .andExpect(redirectedUrl("/login"));
     }
 
     // ──────────────────────────────────────────────────────────────────────
