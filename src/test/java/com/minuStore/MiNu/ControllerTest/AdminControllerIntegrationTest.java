@@ -51,7 +51,7 @@ public class AdminControllerIntegrationTest {
     void getDashboard_unauthenticated_shouldRedirectToLogin() throws Exception {
         mockMvc.perform(get("/admin/dashboard"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("**/login"));
+                .andExpect(redirectedUrlPattern("/login"));
     }
 
     // ──────────────────────────────────────────────────────────────────────
