@@ -9,6 +9,8 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
+Live URL: [https://minu-h5xl.onrender.com](https://minu-h5xl.onrender.com)
+
 ---
 
 ## 📑 Table of Contents
